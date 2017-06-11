@@ -35,9 +35,7 @@ gulp.task('sass', function () {
         flexbugsFixes
     ];
     return gulp.src('src/scss/**/*.scss') // Gets all files ending with .scss in app/scss and children dirs
-        .pipe(sass({
-            includePaths: ["./node_modules/bootstrap/scss"]
-        }).on('error', sass.logError)) // Passes it through a gulp-sass, log errors to console
+        .pipe(sass().on('error', sass.logError)) // Passes it through a gulp-sass, log errors to console
         .pipe(postcss(plugins))
         .pipe(gulp.dest('src/css')) // Outputs it in the css folder
         .pipe(browserSync.reload({ // Reloading with Browser Sync

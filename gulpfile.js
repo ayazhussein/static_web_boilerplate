@@ -34,16 +34,23 @@ gulp.task('sass', function () {
         autoprefixer({ browsers: ['last 2 version'] }),
         flexbugsFixes
     ];
-    return gulp.src(['node_modules/bootstrap/scss/bootstrap.scss', 'src/scss/**/*.scss']) // Gets all files ending with .scss in app/scss and children dirs
-        .pipe(sass().on('error', sass.logError)) // Passes it through a gulp-sass, log errors to console
+    return gulp.src('src/scss/**/*.scss') // Gets all files ending with .scss in app/scss and children dirs
+        .pipe(sass({
+            includePaths: ["./node_modules/bootstrap/scss"]
+        }).on('error', sass.logError)) // Passes it through a gulp-sass, log errors to console
         .pipe(postcss(plugins))
         .pipe(gulp.dest('src/css')) // Outputs it in the css folder
         .pipe(browserSync.reload({ // Reloading with Browser Sync
             stream: true
         }));
 });
-gulp.task('js', function () {
-    return gulp.src(["node_modules/bootstrap/dist/js/bootstrap.min.js", "node_modules/jquery/dist/jquery.min.js", "node_modules/tether/dist/js/tether.min.js"])
+
+// Just moves the bootstrap js to src/js folder
+gulp.task('vendor', function () {
+    return gulp.src([
+        "node_modules/bootstrap/dist/js/bootstrap.min.js",
+        "node_modules/jquery/dist/jquery.min.js",
+        "node_modules/tether/dist/js/tether.min.js"])
         .pipe(gulp.dest("src/js"));
 });
 // Watchers
@@ -100,7 +107,7 @@ gulp.task('clean:dist', function () {
 // ---------------
 
 gulp.task('default', function (callback) {
-    runSequence(['js','sass', 'browserSync'], 'watch',
+    runSequence(['vendor','sass', 'browserSync'], 'watch',
         callback
     )
 });
